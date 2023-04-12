@@ -13,6 +13,8 @@ jobs:
   displayName: 'Build'
   pool:
     vmImage: 'ubuntu-latest'
+  strategy:
+    maxParallel: 1
   steps:
   - checkout: self
   - task: NodeTool@0
@@ -43,5 +45,3 @@ jobs:
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)/build.zip'
       artifact: 'build'
-
-#test
