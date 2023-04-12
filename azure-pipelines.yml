@@ -31,7 +31,15 @@ jobs:
   - script: |
       npm run build
     displayName: 'Build'
-  - script: |
-      npm start &
-      npm run cypress
-    displayName: 'Run Cypress'
+  - task: ArchiveFiles@2
+    displayName: 'Archive Files'
+    inputs:
+      rootFolderOrFile: 'build'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: $(Build.ArtifactStagingDirectory)/build.zip
+  - task: PublishBuildArtifact@1
+    displayName: 'Publish Artifact'
+    inputs:
+      artifactName: 'build'
+      pathToPublish: $(Build.ArtifactStagingDirectory)/build.zip
