@@ -38,8 +38,8 @@ jobs:
       includeRootFolder: false
       archiveType: 'zip'
       archiveFile: $(Build.ArtifactStagingDirectory)/build.zip
-  - task: PublishBuildArtifact@1
+  - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact'
     inputs:
-      artifactName: 'build'
-      pathToPublish: $(Build.ArtifactStagingDirectory)/build.zip
+      targetPath: '$(Build.ArtifactStagingDirectory)/build.zip'
+      artifact: 'build'
