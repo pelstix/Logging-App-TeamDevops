@@ -3,6 +3,11 @@ trigger:
     include:
       - main
 
+pr:
+  branches:
+    include:
+      - main
+
 jobs:
 - job: Build
   displayName: 'Build'
@@ -10,25 +15,33 @@ jobs:
     vmImage: 'ubuntu-latest'
   steps:
   - checkout: self
-  - task: UseNode@2
+  - task: NodeTool@0
     displayName: 'Install Node.js'
     inputs:
-      version: '14'
+      versionSpec: '14'
       checkLatest: true
-  - run: npm ci
-  - run: npm run lint
-  - run: npm run prettier
-  - run: npm run build
+      cachePath: 'npm'
+  - script: |
+      npm ci
+    displayName: 'Install Dependencies'
+  - script: |
+      npm run lint
+      npm run prettier
+    displayName: 'Run ESLint & Prettier'
+  - script: |
+      npm run build
+    displayName: 'Build'
   - task: ArchiveFiles@2
-    displayName: 'Archive build artifacts'
+    displayName: 'Archive Files'
     inputs:
       rootFolderOrFile: 'build'
       includeRootFolder: false
       archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/build.zip'
+      archiveFile: $(Build.ArtifactStagingDirectory)/build.zip
   - task: PublishPipelineArtifact@1
-    displayName: 'Publish pipeline artifact'
+    displayName: 'Publish Artifact'
     inputs:
-      artifactName: 'build'
       targetPath: '$(Build.ArtifactStagingDirectory)/build.zip'
+      artifact: 'build'
+
 
